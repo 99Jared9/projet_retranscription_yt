@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+import httpx
 from youtube_transcript_api import (
     NoTranscriptFound,
     TranscriptsDisabled,
@@ -45,6 +46,26 @@ class TranscriptResult:
     video_id: str
     language: str
     chapters: list[dict] | None
+    title: str = field(default="")
+
+
+# ---------------------------------------------------------------------------
+# Récupération du titre via oEmbed
+# ---------------------------------------------------------------------------
+
+
+def _fetch_title(video_id: str) -> str:
+    """Récupère le titre de la vidéo via l'API oEmbed de YouTube. Fallback sur video_id."""
+    try:
+        oembed_url = (
+            f"https://www.youtube.com/oembed"
+            f"?url=https://www.youtube.com/watch?v={video_id}&format=json"
+        )
+        response = httpx.get(oembed_url, timeout=10)
+        response.raise_for_status()
+        return response.json().get("title", video_id)
+    except Exception:
+        return video_id
 
 
 # ---------------------------------------------------------------------------
@@ -124,10 +145,12 @@ def get_transcript(url: str) -> TranscriptResult:
     """
     video_id = _extract_video_id(url)
     entries, language = _fetch_entries_and_lang(video_id)
+    title = _fetch_title(video_id)
 
     return TranscriptResult(
         entries=entries,
         video_id=video_id,
         language=language,
         chapters=None,  # youtube-transcript-api n'expose pas les chapitres
+        title=title,
     )

@@ -53,32 +53,41 @@ class AnalysisResult:
 # Prompt
 # ---------------------------------------------------------------------------
 
-_SYSTEM_PROMPT = """\
+_SYSTEM_PROMPT_TEMPLATE = """\
 Tu es un assistant spécialisé dans l'analyse de contenu vidéo.
 Tu reçois un transcript YouTube avec des timestamps et tu dois produire un résumé structuré en français.
 
 Tu DOIS répondre UNIQUEMENT avec un objet JSON valide, sans texte supplémentaire avant ou après.
 Structure JSON attendue :
 
-{
+{{
   "summary": "Résumé introductif de 2 à 4 phrases en français.",
   "key_points": [
-    {
+    {{
       "text": "Description du point clé en français.",
       "timestamp_seconds": 42,
       "timestamp_label": "0m42s"
-    }
+    }}
   ]
-}
+}}
 
 Règles :
 - summary : 2 à 4 phrases résumant l'essentiel de la vidéo
-- key_points : entre 5 et 8 points clés représentant les moments les plus importants
+- key_points : entre 5 et {max_points} points clés — couvre les moments les plus importants de la vidéo en entier
 - timestamp_seconds : entier, position en secondes dans la vidéo (≥ 0)
 - timestamp_label : format "Xm Ys" (ex. "1m23s", "0m05s")
 - Tout le contenu (summary et text) doit être rédigé en français
 - Aucun texte en dehors du JSON
 """
+
+
+def _compute_max_points(transcript: TranscriptResult) -> int:
+    """10 points par heure de vidéo, minimum 10."""
+    if not transcript.entries:
+        return 10
+    last = transcript.entries[-1]
+    duration_seconds = last["start"] + last.get("duration", 0)
+    return max(10, int(duration_seconds / 3600 * 10))
 
 
 # ---------------------------------------------------------------------------
@@ -158,11 +167,14 @@ def analyse_transcript(transcript: TranscriptResult, video_url: str) -> Analysis
         "Analyse ce transcript et retourne le JSON demandé."
     )
 
+    max_points = _compute_max_points(transcript)
+    system_prompt = _SYSTEM_PROMPT_TEMPLATE.format(max_points=max_points)
+
     try:
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
-                {"role": "system", "content": _SYSTEM_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
             response_format={"type": "json_object"},

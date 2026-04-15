@@ -9,6 +9,7 @@ from yt_rapport.claude import (
     ClaudeError,
     analyse_transcript,
 )
+from yt_rapport.markdown import generate_filename, generate_markdown
 from yt_rapport.transcript import (
     NoTranscriptAvailable,
     TranscriptError,
@@ -35,10 +36,10 @@ def rapport(url: str = typer.Argument(..., help="URL de la vidéo YouTube à ana
         analysis = _analyze(transcript, url)
 
         console.print("  [dim]3/4[/dim] Génération du Markdown...")
-        markdown = _build_markdown(url, analysis)
+        content, filename = _build_markdown(transcript, analysis)
 
         console.print("  [dim]4/4[/dim] Push vers GitHub...")
-        github_url = _push_to_github(markdown)
+        github_url = _push_to_github(content, filename)
     except (VideoNotFound, VideoPrivate, NoTranscriptAvailable, TranscriptError) as exc:
         console.print(f"[red]Erreur :[/red] {exc}")
         raise typer.Exit(code=1)
@@ -60,9 +61,20 @@ def _analyze(transcript: TranscriptResult, url: str) -> AnalysisResult:
     return analyse_transcript(transcript, url)
 
 
-def _build_markdown(url: str, analysis: dict) -> str:
-    raise NotImplementedError("markdown.py non encore implémenté")
+def _build_markdown(transcript: TranscriptResult, analysis: AnalysisResult) -> tuple[str, str]:
+    content = generate_markdown(
+        video_id=transcript.video_id,
+        title=transcript.title,
+        summary=analysis.summary,
+        key_points=analysis.key_points,
+    )
+    filename = generate_filename(transcript.title)
+    return content, filename
 
 
-def _push_to_github(markdown: str) -> str:
-    raise NotImplementedError("github.py non encore implémenté")
+def _push_to_github(content: str, filename: str) -> str:
+    # TODO: remplacer par github.py — écriture locale temporaire pour vérification
+    import pathlib
+    output_path = pathlib.Path.home() / "Desktop" / filename
+    output_path.write_text(content, encoding="utf-8")
+    return str(output_path)
