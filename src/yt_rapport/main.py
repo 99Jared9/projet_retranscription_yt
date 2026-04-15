@@ -1,27 +1,22 @@
-import re
-import sys
-
 import typer
 from rich.console import Console
 
+from yt_rapport.transcript import (
+    NoTranscriptAvailable,
+    TranscriptError,
+    TranscriptResult,
+    VideoNotFound,
+    VideoPrivate,
+    get_transcript,
+)
+
 app = typer.Typer(help="Extrait et analyse le contenu d'une vidéo YouTube, puis pousse un rapport vers GitHub.")
 console = Console()
-
-_YT_URL_RE = re.compile(r"(youtube\.com/watch|youtu\.be/)")
-
-
-def _validate_url(url: str) -> None:
-    if not _YT_URL_RE.search(url):
-        console.print(f"[red]Erreur :[/red] URL YouTube invalide : {url}")
-        console.print("Format attendu : https://www.youtube.com/watch?v=... ou https://youtu.be/...")
-        raise typer.Exit(code=1)
 
 
 @app.command()
 def rapport(url: str = typer.Argument(..., help="URL de la vidéo YouTube à analyser")):
     """Génère un rapport Markdown à partir d'une vidéo YouTube et le pousse sur GitHub."""
-    _validate_url(url)
-
     console.print(f"[bold]Traitement de :[/bold] {url}")
 
     try:
@@ -36,15 +31,18 @@ def rapport(url: str = typer.Argument(..., help="URL de la vidéo YouTube à ana
 
         console.print("  [dim]4/4[/dim] Push vers GitHub...")
         github_url = _push_to_github(markdown)
-    except Exception as exc:
+    except (VideoNotFound, VideoPrivate, NoTranscriptAvailable, TranscriptError) as exc:
         console.print(f"[red]Erreur :[/red] {exc}")
+        raise typer.Exit(code=1)
+    except Exception as exc:
+        console.print(f"[red]Erreur inattendue :[/red] {exc}")
         raise typer.Exit(code=1)
 
     console.print(f"\n[green]Rapport publié :[/green] {github_url}")
 
 
-def _get_transcript(url: str) -> str:
-    raise NotImplementedError("transcript.py non encore implémenté")
+def _get_transcript(url: str) -> TranscriptResult:
+    return get_transcript(url)
 
 
 def _analyze(transcript: str) -> dict:
