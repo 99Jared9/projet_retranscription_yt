@@ -1,0 +1,30 @@
+# CLAUDE CODE : De DÉBUTANT à PRO en 4h30 (2026)
+
+Cette masterclass complète présente Cloud Code, un agent IA de codage qui permet de créer des applications, outils ou agents IA sans nécessiter de compétences en programmation. Elle couvre l'installation, les concepts fondamentaux, et un système pratique pour développer efficacement en utilisant l'approche 80/20. La vidéo montre comment transformer des idées en produits livrables en quelques heures, en s'adressant à la fois aux débutants et aux développeurs expérimentés.
+
+## Points clés
+
+- [00:00:00](https://www.youtube.com/watch?v=hqNDkIoxstM&t=0s) Introduction à Cloud Code : présentation de l'agent IA de codage qui permet de créer des applications sans écrire de code, accessible à tous, techniques ou non.
+- [00:00:52](https://www.youtube.com/watch?v=hqNDkIoxstM&t=52s) Approche 80/20 : méthode pour passer de l'idée au produit livrable en quelques heures au lieu de semaines, en se concentrant sur les fonctionnalités essentielles.
+- [00:01:43](https://www.youtube.com/watch?v=hqNDkIoxstM&t=103s) Installation de Cloud Code : démonstration de l'installation en moins de 5 minutes, incluant l'utilisation de VARP comme terminal amélioré.
+- [00:05:50](https://www.youtube.com/watch?v=hqNDkIoxstM&t=350s) Premier projet pratique : création d'une landing page pour une agence IA en utilisant Cloud Code, avec génération de fichiers HTML, CSS et JavaScript.
+- [00:07:00](https://www.youtube.com/watch?v=hqNDkIoxstM&t=420s) Commandes essentielles dans Cloud Code : utilisation de l'arobase (@) pour référencer des fichiers, glisser-déposer de captures d'écran, et commandes slash comme /context ou /clear.
+- [00:09:30](https://www.youtube.com/watch?v=hqNDkIoxstM&t=570s) Utilisation d'un IDE (Visual Studio Code) : intégration de Cloud Code dans un environnement de développement pour faciliter la gestion des fichiers et du terminal.
+- [00:11:20](https://www.youtube.com/watch?v=hqNDkIoxstM&t=680s) Gestion des permissions : création d'un fichier settings.json pour contrôler les actions de Cloud Code, évitant les demandes répétitives de confirmation.
+- [00:12:30](https://www.youtube.com/watch?v=hqNDkIoxstM&t=750s) Création du fichier cloud.md : manuel d'instructions pour Cloud Code, généré avec la commande /init, décrivant l'architecture et les bonnes pratiques du projet.
+- [00:14:30](https://www.youtube.com/watch?v=hqNDkIoxstM&t=870s) Introduction aux skills : compétences spécialisées comme le design front-end, téléchargeables depuis des marketplaces pour améliorer les résultats de Cloud Code.
+- [00:17:30](https://www.youtube.com/watch?v=hqNDkIoxstM&t=1050s) Utilisation des MCP (Modest Context Protocol) : protocoles comme Playwright pour tester les interfaces et Contexte 7 pour accéder à des documentations à jour.
+- [00:19:40](https://www.youtube.com/watch?v=hqNDkIoxstM&t=1180s) Création de sous-agents (subagents) : agents spécialisés, comme un générateur d'articles SEO, pour déléguer des tâches complexes et préserver le contexte principal.
+- [00:22:40](https://www.youtube.com/watch?v=hqNDkIoxstM&t=1360s) Plugins et marketplaces : extensions regroupant skills, MCP et sous-agents, avec recommandations pour choisir des plugins fiables basés sur les étoiles GitHub.
+- [00:24:20](https://www.youtube.com/watch?v=hqNDkIoxstM&t=1460s) Méthodologie de développement : remplacement du 'vibe coding' big bang par une approche en quatre phases (découvrir, planifier, setup, bâtir) pour des résultats plus contrôlés.
+- [00:25:30](https://www.youtube.com/watch?v=hqNDkIoxstM&t=1530s) Phase découvrir : définition des fonctionnalités avec un LLM comme Gemini, structuration en MVP, V1, V2 et hors périmètre pour un projet de dashboard CRM.
+- [00:29:10](https://www.youtube.com/watch?v=hqNDkIoxstM&t=1750s) Création du PRD.md : document d'exigences produit en markdown, résumant les objectifs, fonctionnalités et contraintes du projet.
+- [00:30:00](https://www.youtube.com/watch?v=hqNDkIoxstM&t=1800s) Phase planifier : définition de l'architecture technique avec Cloud Code en mode 'plan' et 'think hard', aboutissant à un fichier architecture.md détaillé.
+- [00:33:20](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2000s) Phase setup : configuration de l'environnement avec permissions, connexion à GitHub, création de fichiers .env, et installation d'outils comme Open Spec pour la gestion des spécifications.
+- [00:34:10](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2050s) Intégration de GitHub : connexion du projet à un dépôt GitHub pour le versionnement et le déploiement automatique, avec gestion des commits et pushes via Cloud Code.
+- [00:37:10](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2230s) Utilisation d'Open Spec : framework spec-driven pour développer fonctionnalité par fonctionnalité, avec des étapes de proposition, implémentation, test et archivage.
+- [00:41:20](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2480s) Première implémentation avec Open Spec : développement des fonctionnalités MVP (upload CSV et affichage des KPI) pour le dashboard CRM, avec tests automatisés.
+- [00:42:30](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2550s) Test et validation : vérification manuelle de l'application, correction d'erreurs avec Cloud Code, et utilisation de Playwright pour des tests automatisés.
+- [00:43:10](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2590s) Archivage et déploiement : archivage des spécifications avec Open Spec, envoi du code sur GitHub, et déploiement automatique sur Vercel pour rendre l'application accessible en ligne.
+- [00:44:20](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2660s) Développement itératif : répétition du cycle pour ajouter de nouvelles fonctionnalités (comme un tableau de données), en s'appuyant sur la spécification mise à jour.
+- [00:46:10](https://www.youtube.com/watch?v=hqNDkIoxstM&t=2770s) Conclusion et avantages : résumé des bénéfices de Cloud Code et de la méthodologie présentée, permettant de créer des applications professionnelles rapidement et efficacement.
