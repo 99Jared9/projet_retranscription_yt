@@ -8,7 +8,7 @@
 | Packaging | uv (`pyproject.toml` + `uv.lock`) |
 | CLI | Typer |
 | Transcripts YouTube | youtube-transcript-api |
-| Analyse IA | Anthropic SDK (`claude-sonnet-4-6`) |
+| Analyse IA | DeepSeek API (`deepseek-chat`) |
 | Push GitHub | GitHub REST API (`httpx` + `GITHUB_TOKEN`) |
 | Affichage terminal | rich |
 
@@ -41,7 +41,7 @@ Point d'entrée CLI via Typer. Reçoit l'URL en argument, orchestre l'appel des 
 Appelle `youtube-transcript-api` pour extraire les sous-titres et les chapitres YT si présents. Retourne le transcript brut avec timestamps et la liste des chapitres (ou `None`).
 
 ### `claude.py`
-Construit le prompt à partir du transcript et des chapitres, appelle le SDK Anthropic avec `claude-sonnet-4-6`, retourne les points clés structurés avec timestamps. Utilise le prompt caching pour les transcripts longs.
+Construit le prompt à partir du transcript et des chapitres, appelle l'API DeepSeek avec `deepseek-chat`, retourne les points clés structurés avec timestamps. Utilise le context caching pour les transcripts longs.
 
 ### `markdown.py`
 Transforme la réponse Claude en fichier `.md` :
@@ -79,20 +79,20 @@ Terminal (rich) ──► lien cliquable
 
 ## Décisions de conception
 
-**Prompt caching activé dès le MVP** — les transcripts longs sont coûteux en tokens ; le caching Anthropic réduit la latence et le coût sur les appels répétés (ex. retry après erreur).
+**Context caching activé dès le MVP** — les transcripts longs sont coûteux en tokens ; le context caching DeepSeek réduit la latence et le coût sur les appels répétés (ex. retry après erreur).
 
 **GitHub REST API plutôt que git CLI** — `PUT /contents/{path}` crée un fichier directement sans cloner le repo localement. Aucune dépendance sur git installé, aucune config SSH/HTTPS à gérer. Le `GITHUB_TOKEN` suffit, comme le MCP GitHub.
 
 **Typer plutôt qu'argparse** — type hints Python suffisent à définir l'interface CLI ; pas de code de parsing à écrire. Extensible au batch (V2) sans refonte.
 
-**Pas de LangChain** — aucune valeur ajoutée pour un pipeline linéaire sans mémoire cross-vidéos (hors périmètre). Le SDK Anthropic directement donne un contrôle total sur le prompt.
+**Pas de LangChain** — aucune valeur ajoutée pour un pipeline linéaire sans mémoire cross-vidéos (hors périmètre). L'API DeepSeek directement donne un contrôle total sur le prompt.
 
 ---
 
 ## Configuration requise (variables d'environnement)
 
 ```
-ANTHROPIC_API_KEY   # clé API Anthropic
+DEEPSEEK_API_KEY    # clé API DeepSeek
 GITHUB_TOKEN        # token GitHub (scope repo)
 GITHUB_REPO         # repo cible au format owner/repo (ex. monpseudo/ma-veille)
 ```

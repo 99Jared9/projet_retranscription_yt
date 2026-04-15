@@ -12,7 +12,7 @@ CLI Python qui prend une URL YouTube, extrait les sous-titres, les analyse via C
 | Packaging | uv (`pyproject.toml` + `uv.lock`) |
 | CLI | Typer |
 | Transcripts YouTube | youtube-transcript-api |
-| Analyse IA | Anthropic SDK (`claude-sonnet-4-6`) |
+| Analyse IA | DeepSeek API (`deepseek-chat`) |
 | Push GitHub | GitHub REST API (`httpx` + `GITHUB_TOKEN`) |
 | Affichage terminal | rich |
 
@@ -35,7 +35,7 @@ yt-rapport/
 ## Variables d'environnement requises
 
 ```
-ANTHROPIC_API_KEY   # clé API Anthropic
+DEEPSEEK_API_KEY    # clé API DeepSeek
 GITHUB_TOKEN        # token GitHub (scope repo)
 GITHUB_REPO         # repo cible au format owner/repo (ex. monpseudo/ma-veille)
 ```
@@ -44,7 +44,7 @@ GITHUB_REPO         # repo cible au format owner/repo (ex. monpseudo/ma-veille)
 
 - Input : URL YouTube en argument CLI
 - Extraction des sous-titres via `youtube-transcript-api` — erreur propre si pas de CC
-- Analyse Claude : résumé intro + 5-8 points clés, **toujours en français**
+- Analyse DeepSeek : résumé intro + 5-8 points clés, **toujours en français**
 - Timecodes cliquables au format `?t=Xs` dans le `.md`
 - Push GitHub via `PUT /repos/{owner}/{repo}/contents/{path}` — pas de clone local
 - Nom de fichier : `YYYY-MM-DD-titre.md`
@@ -52,9 +52,9 @@ GITHUB_REPO         # repo cible au format owner/repo (ex. monpseudo/ma-veille)
 
 ## Décisions de conception à respecter
 
-- **Prompt caching activé** — passer le transcript dans un bloc `cache_control` pour réduire coût et latence sur les retries
+- **Context caching activé** — passer le transcript dans un bloc avec context caching DeepSeek pour réduire coût et latence sur les retries
 - **GitHub REST API** (pas git CLI) — `PUT /contents/{path}` + base64, aucune dépendance locale
-- **Pas de LangChain** — SDK Anthropic directement, pipeline linéaire sans mémoire cross-vidéos
+- **Pas de LangChain** — API DeepSeek directement, pipeline linéaire sans mémoire cross-vidéos
 - **Typer** pour le CLI — extensible au batch (V2) sans refonte
 
 ## Périmètre MVP — ce qui est hors scope

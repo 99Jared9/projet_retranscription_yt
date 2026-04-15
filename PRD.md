@@ -4,7 +4,7 @@
 
 - **Input URL en ligne de commande** — on passe le lien en argument, pas d'interface
 - **Récupération des sous-titres YT** — via youtube-transcript-api · erreur propre si pas de CC
-- **Analyse Claude + points clés** — prompt simple · 5-8 points · résumé intro · toujours en français
+- **Analyse DeepSeek + points clés** — prompt simple · 5-8 points · résumé intro · toujours en français
 - **Timecodes cliquables dans le .md** — format `?t=Xs` dans l'URL · liens directs vers la vidéo
 - **Push GitHub automatique** — fichier `YYYY-MM-DD-titre.md` · commit + push repo ma-veille
 

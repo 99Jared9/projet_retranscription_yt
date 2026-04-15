@@ -1,6 +1,14 @@
 import typer
+from dotenv import load_dotenv
 from rich.console import Console
 
+load_dotenv()
+
+from yt_rapport.claude import (
+    AnalysisResult,
+    ClaudeError,
+    analyse_transcript,
+)
 from yt_rapport.transcript import (
     NoTranscriptAvailable,
     TranscriptError,
@@ -23,8 +31,8 @@ def rapport(url: str = typer.Argument(..., help="URL de la vidéo YouTube à ana
         console.print("  [dim]1/4[/dim] Récupération des sous-titres...")
         transcript = _get_transcript(url)
 
-        console.print("  [dim]2/4[/dim] Analyse via Claude...")
-        analysis = _analyze(transcript)
+        console.print("  [dim]2/4[/dim] Analyse en cours...")
+        analysis = _analyze(transcript, url)
 
         console.print("  [dim]3/4[/dim] Génération du Markdown...")
         markdown = _build_markdown(url, analysis)
@@ -33,6 +41,9 @@ def rapport(url: str = typer.Argument(..., help="URL de la vidéo YouTube à ana
         github_url = _push_to_github(markdown)
     except (VideoNotFound, VideoPrivate, NoTranscriptAvailable, TranscriptError) as exc:
         console.print(f"[red]Erreur :[/red] {exc}")
+        raise typer.Exit(code=1)
+    except ClaudeError as exc:
+        console.print(f"[red]Erreur d'analyse :[/red] {exc}")
         raise typer.Exit(code=1)
     except Exception as exc:
         console.print(f"[red]Erreur inattendue :[/red] {exc}")
@@ -45,8 +56,8 @@ def _get_transcript(url: str) -> TranscriptResult:
     return get_transcript(url)
 
 
-def _analyze(transcript: str) -> dict:
-    raise NotImplementedError("claude.py non encore implémenté")
+def _analyze(transcript: TranscriptResult, url: str) -> AnalysisResult:
+    return analyse_transcript(transcript, url)
 
 
 def _build_markdown(url: str, analysis: dict) -> str:
