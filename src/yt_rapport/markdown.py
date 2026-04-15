@@ -20,7 +20,7 @@ def generate_filename(title: str) -> str:
     today = date.today().strftime("%Y-%m-%d")
     normalized = unicodedata.normalize("NFD", title)
     ascii_title = "".join(c for c in normalized if unicodedata.category(c) != "Mn")
-    slug = re.sub(r"[^a-z0-9]+", "-", ascii_title.lower()).strip("-")
+    slug = re.sub(r"[^a-z0-9]+", "-", ascii_title.lower()).strip("-")[:60].rstrip("-")
     if not slug:
         slug = "video"
     return f"{today}-{slug}.md"

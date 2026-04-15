@@ -1,3 +1,5 @@
+import os
+
 import typer
 from dotenv import load_dotenv
 from rich.console import Console
@@ -8,6 +10,12 @@ from yt_rapport.claude import (
     AnalysisResult,
     ClaudeError,
     analyse_transcript,
+)
+from yt_rapport.github import (
+    GitHubAuthError,
+    GitHubConflictError,
+    GitHubRepoError,
+    push_file,
 )
 from yt_rapport.markdown import generate_filename, generate_markdown
 from yt_rapport.transcript import (
@@ -26,6 +34,11 @@ console = Console()
 @app.command()
 def rapport(url: str = typer.Argument(..., help="URL de la vidéo YouTube à analyser")):
     """Génère un rapport Markdown à partir d'une vidéo YouTube et le pousse sur GitHub."""
+    for var in ("GITHUB_TOKEN", "GITHUB_REPO"):
+        if not os.environ.get(var):
+            console.print(f"[red]Erreur :[/red] La variable d'environnement {var} est manquante.")
+            raise typer.Exit(code=1)
+
     console.print(f"[bold]Traitement de :[/bold] {url}")
 
     try:
@@ -45,6 +58,9 @@ def rapport(url: str = typer.Argument(..., help="URL de la vidéo YouTube à ana
         raise typer.Exit(code=1)
     except ClaudeError as exc:
         console.print(f"[red]Erreur d'analyse :[/red] {exc}")
+        raise typer.Exit(code=1)
+    except (GitHubAuthError, GitHubRepoError, GitHubConflictError) as exc:
+        console.print(f"[red]Erreur GitHub :[/red] {exc}")
         raise typer.Exit(code=1)
     except Exception as exc:
         console.print(f"[red]Erreur inattendue :[/red] {exc}")
@@ -73,8 +89,4 @@ def _build_markdown(transcript: TranscriptResult, analysis: AnalysisResult) -> t
 
 
 def _push_to_github(content: str, filename: str) -> str:
-    # TODO: remplacer par github.py — écriture locale temporaire pour vérification
-    import pathlib
-    output_path = pathlib.Path.home() / "Desktop" / filename
-    output_path.write_text(content, encoding="utf-8")
-    return str(output_path)
+    return push_file(filename, content)
